@@ -31,52 +31,54 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
       appBar: AppBar(
         title: const Text('Controlling App'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            LocationInputField(
-              controller: _controller.sourceController,
-              label: 'Source Location',
-            ),
-            SizedBox(height: 16.0),
-            LocationInputField(
-              controller: _controller.destinationController,
-              label: 'Destination Location',
-            ),
-            SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Start Navigation Automatically'),
-                Switch(
-                  value: _autoStartNavigation,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _autoStartNavigation = newValue;
-                    });
-                  },
-                ),
-              ],
-            ),
-            ShowRouteButton(
-              onPressed: () => _controller.launchNavigation(autoStart: _autoStartNavigation),
-            ),
-            const SizedBox(height: 24.0),
-            LocationInputField(
- controller: _updateDestinationController,
-              label: 'New Destination',
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
- _controller.updateDestination(newDestination: _updateDestinationController.text);
-              },
-              child: const Text('Update Destination'),
-            ),
-
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              LocationInputField(
+                controller: _controller.sourceController,
+                label: 'Source Location',
+              ),
+              SizedBox(height: 16.0),
+              LocationInputField(
+                controller: _controller.destinationController,
+                label: 'Destination Location',
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Start Navigation Automatically'),
+                  Switch(
+                    value: _autoStartNavigation,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _autoStartNavigation = newValue;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              ShowRouteButton(
+                onPressed: () => _controller.launchNavigation(autoStart: _autoStartNavigation),
+              ),
+              const SizedBox(height: 24.0),
+              LocationInputField(
+         controller: _updateDestinationController,
+                label: 'New Destination',
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+         _controller.updateDestination(newDestination: _updateDestinationController.text);
+                },
+                child: const Text('Update Destination'),
+              ),
+        
+            ],
+          ),
         ),
       ),
     );
