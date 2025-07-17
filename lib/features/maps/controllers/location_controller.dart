@@ -35,6 +35,7 @@ class LocationController {
       _isNavigating = true;
       launchMap("", newDestination, navigate: true);
     }
+    return wasNavigating;
   }
 
   void dispose() {
