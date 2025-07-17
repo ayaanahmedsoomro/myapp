@@ -20,62 +20,112 @@ class LocationInputField extends StatefulWidget {
 }
 
 class _LocationInputFieldState extends State<LocationInputField> {
+  bool isLoading = false;
+
   Future<void> _useCurrentLocation() async {
-    // 1. Request location permission
-    PermissionStatus permissionStatus = await Permission.location.request();
+    setState(() {
+      isLoading = true;
+    });
 
-    if (permissionStatus.isGranted) {
-      try {
-        // 2. Get current position
-        Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
+    try {
+      // Check if permission is already granted
+      if (await Permission.location.isDenied ||
+          await Permission.location.isPermanentlyDenied) {
+        // Request permission
+        PermissionStatus status = await Permission.location.request();
 
-        // 3. Use geocoding to get address
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-          position.latitude,
-          position.longitude,
-        );
+        // If denied permanently, direct user to app settings
+        if (status.isPermanentlyDenied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Location permission permanently denied. Please enable it from app settings.',
+                ),
+              ),
+            );
+          }
+          openAppSettings();
+          setState(() => isLoading = false);
+          return;
+        }
 
-        // 4. Autofill sourceController with formatted address
-        if (placemarks.isNotEmpty) {
-          Placemark placemark = placemarks.first;
-          String address =
-              '${placemark.street}, ${placemark.locality}, ${placemark.country}';
+        // If still denied, exit
+        if (!status.isGranted) {
+          setState(() => isLoading = false);
+          return;
+        }
+      }
+
+      // Get location
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Get address
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks.first;
+        String address =
+            '${placemark.street}, ${placemark.locality}, ${placemark.country}';
+        if (mounted) {
           widget.controller.text = address;
-        } else {
+        }
+      } else {
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not find address for location.')),
+            const SnackBar(
+              content: Text('Could not find address for location.'),
+            ),
           );
         }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error getting location: $e')),
-        );
       }
-    } else {
-      // 5. Show user-friendly message if permission not granted
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location permission not granted.')),
-      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error getting location: $e')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: widget.controller,
-        decoration: InputDecoration(
-          labelText: widget.label,
-          border: const OutlineInputBorder(),
-          suffixIcon: widget.showUseCurrentLocationButton
-              ? IconButton(
-                  icon: const Icon(Icons.my_location),
-                  onPressed: _useCurrentLocation,
-                )
-              : null,
+    return Column(
+      children: [
+        TextFormField(
+          controller: widget.controller,
+          decoration: InputDecoration(
+            labelText: widget.label,
+            suffixIcon:
+                widget.showUseCurrentLocationButton
+                    ? IconButton(
+                      icon:
+                          isLoading
+                              ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Icon(Icons.my_location),
+                      onPressed: isLoading ? null : _useCurrentLocation,
+                    )
+                    : null,
+          ),
         ),
-      ),
+      ],
     );
   }
 }
