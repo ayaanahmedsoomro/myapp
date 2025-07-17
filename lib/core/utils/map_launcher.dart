@@ -1,8 +1,12 @@
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> launchMap(String source, String destination, {required bool navigate}) async {
+Future<void> launchMap(
+  String source,
+  String destination, {
+  required bool navigate,
+}) async {
   final url =
-      'https://www.google.com/maps/dir/?api=1&origin=$source&destination=$destination&travelmode=driving';
+      'https://www.google.com/maps/dir/?api=1&origin=$source&destination=$destination&travelmode=driving${navigate ? '&navigate=yes' : ''}';
   final uri = Uri.parse(url);
 
   try {
