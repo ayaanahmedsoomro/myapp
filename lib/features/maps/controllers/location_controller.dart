@@ -3,10 +3,13 @@ import 'package:myapp/core/utils/map_launcher.dart';
 // import '../../core/utils/map_launcher.dart';
 
 class LocationController {
+  bool _isNavigating = false;
+
   final TextEditingController sourceController = TextEditingController();
   final TextEditingController destinationController = TextEditingController();
-  
+
   void launchNavigation({required bool autoStart}) {
+    _isNavigating = true;
     final source = sourceController.text;
     final destination = destinationController.text;
 
@@ -24,9 +27,12 @@ class LocationController {
     }
   }
 
-  void updateDestination({required String newDestination}) {
+  bool updateDestination({required String newDestination}) {
+    bool wasNavigating = _isNavigating;
+
     if (newDestination.isNotEmpty) {
       // Launch map with empty source to use current location as start
+      _isNavigating = true;
       launchMap("", newDestination, navigate: true);
     }
   }

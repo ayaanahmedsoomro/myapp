@@ -73,11 +73,43 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
-         _controller.updateDestination(newDestination: _updateDestinationController.text);
+                  final isNavigating = _controller.updateDestination(
+                      newDestination: _updateDestinationController.text);
+                  if (isNavigating) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Change Destination'),
+                          content: const Text(
+                              'You are already in navigation. Do you want to change the destination?'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('No'),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Dismiss dialog
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Yes'),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Dismiss dialog
+                                _controller.updateDestination(
+                                    newDestination: _updateDestinationController.text);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    _controller.updateDestination(
+                        newDestination: _updateDestinationController.text);
+                  }
                 },
                 child: const Text('Update Destination'),
               ),
-        
+
             ],
           ),
         ),
