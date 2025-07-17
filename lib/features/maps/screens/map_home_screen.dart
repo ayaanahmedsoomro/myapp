@@ -16,6 +16,8 @@ class MapHomeScreen extends StatefulWidget {
 class _MapHomeScreenState extends State<MapHomeScreen> {
   final LocationController _controller = LocationController();
   bool _autoStartNavigation = true;
+  final TextEditingController _newDestinationController = TextEditingController();
+  final TextEditingController _updateDestinationController = TextEditingController();
 
   @override
   void dispose() {
@@ -38,12 +40,12 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
               controller: _controller.sourceController,
               label: 'Source Location',
             ),
-            const SizedBox(height: 16.0),
+            SizedBox(height: 16.0),
             LocationInputField(
               controller: _controller.destinationController,
               label: 'Destination Location',
             ),
-            const SizedBox(height: 16.0),
+            SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -61,6 +63,19 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
             ShowRouteButton(
               onPressed: () => _controller.launchNavigation(autoStart: _autoStartNavigation),
             ),
+            const SizedBox(height: 24.0),
+            LocationInputField(
+ controller: _updateDestinationController,
+              label: 'New Destination',
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+ _controller.updateDestination(newDestination: _updateDestinationController.text);
+              },
+              child: const Text('Update Destination'),
+            ),
+
           ],
         ),
       ),

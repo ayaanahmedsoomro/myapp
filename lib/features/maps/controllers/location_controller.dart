@@ -16,6 +16,21 @@ class LocationController {
     }
   }
 
+  void changeDestination({required String newDestination}) {
+    final source = sourceController.text;
+
+    if (newDestination.isNotEmpty) {
+      launchMap(source, newDestination, navigate: true);
+    }
+  }
+
+  void updateDestination({required String newDestination}) {
+    if (newDestination.isNotEmpty) {
+      // Launch map with empty source to use current location as start
+      launchMap("", newDestination, navigate: true);
+    }
+  }
+
   void dispose() {
     sourceController.dispose();
     destinationController.dispose();
