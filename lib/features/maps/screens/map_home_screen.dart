@@ -39,6 +39,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
             children: <Widget>[
               LocationInputField(
                 controller: _controller.sourceController,
+                showUseCurrentLocationButton: true,
                 label: 'Source Location',
               ),
               SizedBox(height: 16.0),
