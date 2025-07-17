@@ -1,15 +1,22 @@
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> launchMap(String source, String destination) async {
-  final Uri googleMapsUrl = Uri.parse(
-      'https://www.google.com/maps/dir/?api=1&origin=$source&destination=$destination&travelmode=driving');
+Future<void> launchMap(String source, String destination, {required bool navigate}) async {
+  final url =
+      'https://www.google.com/maps/dir/?api=1&origin=$source&destination=$destination&travelmode=driving';
+  final uri = Uri.parse(url);
 
-  print('Trying to launch: $googleMapsUrl');
-
-  if (await canLaunchUrl(googleMapsUrl)){
-    print('Launching map...');
-    await launchUrl(googleMapsUrl);
-  } else {
-    print('Could not launch map. Make sure Google Maps is installed.');
+  try {
+    // Try external app (Maps)
+    if (await launchUrl(uri, mode: LaunchMode.externalNonBrowserApplication)) {
+      print("Launched via external app");
+    }
+    // If fails, fallback to browser
+    else if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      print("Launched in browser");
+    } else {
+      print("Could not launch");
+    }
+  } catch (e) {
+    print("Error launching URL: $e");
   }
 }

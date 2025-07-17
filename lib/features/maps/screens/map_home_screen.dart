@@ -15,6 +15,7 @@ class MapHomeScreen extends StatefulWidget {
 
 class _MapHomeScreenState extends State<MapHomeScreen> {
   final LocationController _controller = LocationController();
+  bool _autoStartNavigation = true;
 
   @override
   void dispose() {
@@ -42,9 +43,23 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
               controller: _controller.destinationController,
               label: 'Destination Location',
             ),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: 16.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Start Navigation Automatically'),
+                Switch(
+                  value: _autoStartNavigation,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _autoStartNavigation = newValue;
+                    });
+                  },
+                ),
+              ],
+            ),
             ShowRouteButton(
-              onPressed: _controller.launchRoute,
+              onPressed: () => _controller.launchNavigation(autoStart: _autoStartNavigation),
             ),
           ],
         ),
