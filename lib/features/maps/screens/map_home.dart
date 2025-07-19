@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:controlling_app/features/maps/controllers/location_controller.dart';
-// import 'package:controlling_app/features/maps/widgets/location_input_field.dart';
-// import 'package:controlling_app/features/maps/widgets/show_route_button.dart';
 import 'package:myapp/features/maps/controllers/location_controller.dart';
 import 'package:myapp/features/maps/widgets/location_input_field.dart';
 import 'package:myapp/features/maps/widgets/show_route_button.dart';
@@ -16,7 +13,6 @@ class MapHomeScreen extends StatefulWidget {
 class _MapHomeScreenState extends State<MapHomeScreen> {
   final LocationController _controller = LocationController();
   bool _autoStartNavigation = true;
-  final TextEditingController _newDestinationController = TextEditingController();
   final TextEditingController _updateDestinationController = TextEditingController();
 
   @override
@@ -47,7 +43,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                 controller: _controller.destinationController,
                 label: 'Destination Location',
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 16.0),  
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
