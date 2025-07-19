@@ -6,6 +6,8 @@ plugins {
 }
 
 android {
+    namespace = "com.ayaan.myapp"
+    compileSdk = 33
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "29.0.13599879"
 
